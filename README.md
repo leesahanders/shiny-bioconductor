@@ -72,47 +72,47 @@ More complex example showing how to overwrite the behavior:
 
 ```mermaid
 graph TD
-    A[Start] --> B{Using renv?};
+    A[Start] --> B{Using renv?}
 
-    B -- No --> C[Globally Configured Repository URL];
-    B -- Yes --> D{New Project or Existing?};
+    B -- No --> C[Globally Configured Repository URL]
+    B -- Yes --> D{New Project or Existing?}
 
-    D -- New Project + renv init --> E[renv uses Global Settings for Repository URL];
-    D -- Clone Existing renv Project + renv restore --> F{Repository URL Specified During Restore?};
+    D -- New Project + renv init --> E[renv uses Global Settings for Repository URL]
+    D -- Clone Existing renv Project + renv restore --> F{Repository URL Specified During Restore?}
 
-    F -- No --> G[renv uses Repository URL recorded in renv.lock];
-    F -- Yes --> H[renv uses Specified Repository URL];
+    F -- No --> G[renv uses Repository URL recorded in renv.lock]
+    F -- Yes --> H[renv uses Specified Repository URL]
 
-    H --> I[renv snapshot];
-    I --> J[New Repository URL recorded in renv.lock];
+    H --> I[renv snapshot]
+    I --> J[New Repository URL recorded in renv.lock]
 
-    G --> K[R Package Installation (CRAN)];
-    J --> K;
-    E --> K;
-    C --> K;
+    G --> K[R Package Installation (CRAN)]
+    J --> K
+    E --> K
+    C --> K
 
     subgraph Bioconductor Specifics
-        L[Start Bioconductor Flow] --> M{Using renv + BiocManager?};
-        M -- No --> N[Globally Configured Bioconductor URL (e.g., options("BioC_mirror"))];
-        M -- Yes --> O{New Project or Existing?};
+        L[Start Bioconductor Flow] --> M{Using renv + BiocManager?}
+        M -- No --> N[Globally Configured Bioconductor URL (e.g., options("BioC_mirror"))]
+        M -- Yes --> O{New Project or Existing?}
 
-        O -- New Project + renv init --> P[renv uses Global Bioconductor Settings];
-        O -- Clone Existing renv Project + renv restore --> Q{Bioconductor URL Specified During Restore?};
+        O -- New Project + renv init --> P[renv uses Global Bioconductor Settings]
+        O -- Clone Existing renv Project + renv restore --> Q{Bioconductor URL Specified During Restore?}
 
-        Q -- No --> R[renv uses Bioconductor URL recorded in renv.lock];
-        Q -- Yes --> S[renv uses Specified Bioconductor URL];
+        Q -- No --> R[renv uses Bioconductor URL recorded in renv.lock]
+        Q -- Yes --> S[renv uses Specified Bioconductor URL]
 
-        S --> T[renv snapshot];
-        T --> U[New Bioconductor URL recorded in renv.lock];
+        S --> T[renv snapshot]
+        T --> U[New Bioconductor URL recorded in renv.lock]
 
-        R --> V[Bioconductor Package Installation];
-        U --> V;
-        P --> V;
-        N --> V;
+        R --> V[Bioconductor Package Installation]
+        U --> V
+        P --> V
+        N --> V
     end
 
-    K --> W[End];
-    V --> W;
+    K --> W[End]
+    V --> W
 ```
 
 ## Bioconductor
@@ -133,12 +133,16 @@ Sys.setenv("R_BIOC_VERSION" = "3.22")
 
 # Configure a CRAN snapshot compatible with Bioconductor 3.22
 options(repos = c(CRAN = "https://pkg.current.posit.team/cran/__linux__/jammy/latest"))
+
+# Set the biocmanager repo url 
+options(repos=c(BiocManager::repositories()))
 ```
 
 Restart R and verify that the repos have been configured:
 
 ```r
 BiocManager::repositories()
+options('repos')
 ```
 
 <details>
@@ -224,16 +228,7 @@ renv::restore()
 
 The default behavior is to keep the repository URL's in the lockfile when running `renv::restore().` 
 
-#### Changing the repository URL 
-
-If we want to reference a different repository we can either: 
-
-- update the repositories in the current session with `options(repos = c(RSPM = "https://pkg.current.posit.team/cran/__linux__/jammy/latest"))` then `renv::restore(rebuild=TRUE)`
-- Tell it what repository to use during the restore `renv::restore(repos="https://pkg.current.posit.team/cran/__linux__/jammy/latest", rebuild=TRUE)` 
-
-Whichever path you choose make sure that you save the new repository URL to the lock file: 
-
-- `renv::snapshot(repos = c("RSPM" = "https://packagemanager.posit.co/cran/__linux__/jammy/latest"))`
+For example, we might follow these steps to restore a bioconductor renv project: 
 
 ```r
 # Use pak with renv
@@ -246,7 +241,28 @@ renv::record("renv@1.0.7")
 options(repos=c(BiocManager::repositories()))
 
 # restore the renv project
-renv::restore(repos="https://pkg.current.posit.team/cran/__linux__/jammy/latest", rebuild=TRUE, bioconductor=TRUE, repos=options('repos'))
+renv::restore(bioconductor=TRUE, repos=options('repos'))
+```
+
+#### Changing the repository URL 
+
+If we want to clone down a project and reference a different repository we can: 
+
+```r
+# Use pak with renv
+options(renv.config.pak.enabled=TRUE)
+
+# Update the version of renv in the lock file to latest
+renv::record("renv@1.0.7")
+
+# Set the R repository url(s)
+repos <- c(CRAN = "https://cloud.r-project.org", RSPM = "https://pkg.current.posit.team/cran/__linux__/jammy/latest")
+
+# Set the biocmanager repo url 
+options(repos=c(BiocManager::repositories()))
+
+# restore the renv project
+renv::restore(rebuild=TRUE, bioconductor=TRUE, repos=options('repos'))
 
 # save the new repository URL to the lock file 
 renv::snapshot(repos = c("RSPM" = "https://packagemanager.posit.co/cran/__linux__/jammy/latest"))
