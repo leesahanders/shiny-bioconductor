@@ -49,26 +49,7 @@ options(repos = repos)
 
 ## How is the repository set? 
 
-Simple example: 
-
-```mermaid
-graph TD
-    A[Start] --> B{Using renv?};
-
-    B -- No --> C[Globally Configured Repository URL];
-    B -- Yes --> D{New Project or Existing?};
-
-    D -- New Project + renv init --> E[renv uses Global Settings for Repository URL];
-    D -- Clone Existing renv Project + renv restore --> F[renv uses Repository URL recorded in renv.lock];
-
-    C --> G[R Package Installation];
-    E --> G;
-    F --> G;
-
-    G --> H[End];
-```
-
-Simple example showing how the repository URL is set: 
+Diagram showing how the repository URL is set: 
 
 ```mermaid 
 graph TD
@@ -79,7 +60,7 @@ graph TD
 
     D -- New Project + renv init --> E[renv uses Global Settings for Repository URL]
     
-    D -- Clone Existing renv Project --> F{Set repository URL during clone/restore?}
+    D -- Clone Existing renv Project --> F{Set repository URL during restore?}
     
     F -- No --> G[renv uses Repository URL recorded in renv.lock]
     F -- Yes --> I[renv uses Specified Repository URL]
@@ -91,55 +72,6 @@ graph TD
 
     J --> H[End]
 ```
-
-More complex example showing how to overwrite the behavior: 
-
-```mermaid
-graph TD
-    A[Start] --> B{Using renv?};
-
-    B -- No --> C[Globally Configured Repository URL];
-    B -- Yes --> D{New Project or Existing?};
-
-    D -- New Project + renv init --> E[renv uses Global Settings for Repository URL];
-    D -- Clone Existing renv Project + renv restore --> F{Repository URL Specified During Restore?};
-
-    F -- No --> G[renv uses Repository URL recorded in renv.lock];
-    F -- Yes --> H[renv uses Specified Repository URL];
-
-    H --> I[renv snapshot];
-    I --> J[New Repository URL recorded in renv.lock];
-
-    G --> K{R Package Installation};
-    J --> K
-    E --> K
-    C --> K
-
-    subgraph Bioconductor Specifics
-        L[Start Bioconductor Flow] --> M{Using renv + BiocManager?}
-        M -- No --> N[Globally Configured Bioconductor URL]
-        M -- Yes --> O{New Project or Existing?}
-
-        O -- New Project + renv init --> P[renv uses Global Bioconductor Settings]
-        O -- Clone Existing renv Project + renv restore --> Q{Bioconductor URL Specified During Restore?}
-
-        Q -- No --> R[renv uses Bioconductor URL recorded in renv.lock]
-        Q -- Yes --> S[renv uses Specified Bioconductor URL]
-
-        S --> T[renv snapshot]
-        T --> U[New Bioconductor URL recorded in renv.lock]
-
-        R --> V[Bioconductor Package Installation]
-        U --> V
-        P --> V
-        N --> V
-
-    end
-
-    K --> W[End]
-    V --> W
-```
-
 
 ## Bioconductor
 
