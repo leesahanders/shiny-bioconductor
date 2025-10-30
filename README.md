@@ -115,6 +115,7 @@ graph TD
     V --> W
 ```
 
+
 ## Bioconductor
 
 In order to set up Bioconductor we need to: 
