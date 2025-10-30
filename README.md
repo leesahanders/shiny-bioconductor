@@ -68,6 +68,30 @@ graph TD
     G --> H[End];
 ```
 
+Simple example showing how the repository URL is set: 
+
+```mermaid 
+graph TD
+    A[Start] --> B{Using renv?}
+
+    B -- No --> C[Globally Configured Repository URL]
+    B -- Yes --> D{New Project or Existing?}
+
+    D -- New Project + renv init --> E[renv uses Global Settings for Repository URL]
+    
+    D -- Clone Existing renv Project --> F{Set repository URL during clone/restore?}
+    
+    F -- No --> G[renv uses Repository URL recorded in renv.lock]
+    F -- Yes --> I[renv uses Specified Repository URL]
+
+    C --> J[R Package Installation]
+    E --> J
+    G --> J
+    I --> J
+
+    J --> H[End]
+```
+
 More complex example showing how to overwrite the behavior: 
 
 ```mermaid
