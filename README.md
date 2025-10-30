@@ -13,10 +13,13 @@ This is a very simple example showing a repository that can be cloned down to sh
 - Using Public Package Manager : <https://support.rstudio.com/hc/en-us/articles/360046703913-FAQ-for-RStudio-Public-Package-Manager>
 - CRAN startup: Friendly R Startup Configuration: <https://cran.r-project.org/web/packages/startup/vignettes/startup-intro.html>
 - Some useful Bioconductor commands and tricks: <https://solutions.posit.co/envs-pkgs/bioconductor/index.html#problem-statement> and <https://pkgs.rstudio.com/renv/articles/bioconductor.html>. 
+- Appsilon: How to Use {renv} and Bioconductor for Reproducible Data Analysis: <https://www.appsilon.com/post/renv-bioconductor> 
 
 ## Understand your package repositories (before renv) 
 
-We can check our package repositories with: `options('repos')`
+We can see our bioconductor repos with: `BiocManager::repositories()`
+
+We can check our R package repositories with: `options('repos')`
 
 <details>
 <summary>Expand an example output</summary>
@@ -43,8 +46,11 @@ $repos
 We can set it with: 
 
 ```r
-repos <- c(CRAN = "https://cloud.r-project.org", WORK = "https://work.example.org")
-options(repos = repos)
+# Set the R repository url(s)
+options(repos = c(RSPM = "https://pkg.current.posit.team/cran/__linux__/jammy/latest"), CRAN = "https://cloud.r-project.org")
+
+# Only one repo
+options(repos = c(CRAN = "https://pkg.current.posit.team/cran/__linux__/jammy/latest))
 ```
 
 ## How is the repository set? 
@@ -201,10 +207,6 @@ options(renv.config.pak.enabled=TRUE)
 # Update the version of renv in the lock file to latest
 renv::record("renv@1.0.7")
 
-# Set the R repository url(s)
-options(repos = c(RSPM = "https://pkg.current.posit.team/cran/__linux__/jammy/latest"), CRAN = "https://cloud.r-project.org")
-options(repos = c(CRAN = "https://pkg.current.posit.team/cran/__linux__/jammy/latest))
-
 # Install the package that manages bioconductor packages
 install.packages('BiocManager')
 
@@ -229,11 +231,27 @@ renv::record("renv@1.0.7")
 # Set the R repository url(s)
 options(repos = c(RSPM = "https://pkg.current.posit.team/cran/__linux__/jammy/latest"), CRAN = "https://cloud.r-project.org")
 
+# Install the package that manages bioconductor packages
+install.packages('BiocManager')
+
+# Configure BiocManager to use Posit Package Manager
+options(BioC_mirror = "https://pkg.current.posit.team/bioconductor/latest")
+
+# Configure BiocManager to load its configuration from Package Manager
+options(BIOCONDUCTOR_CONFIG_FILE = "https://pkg.current.posit.team/bioconductor/latest/config.yaml")
+
+# Set the Bioconductor version to prevent defaulting to a newer version
+Sys.setenv("R_BIOC_VERSION" = "3.22")
+
+# Configure a CRAN snapshot compatible with Bioconductor 3.22
+options(repos = c(CRAN = "https://pkg.current.posit.team/cran/__linux__/jammy/latest"))
+
 # Set the biocmanager repo url 
-options(repos=c(BiocManager::repositories()))
+#options(repos=c(BiocManager::repositories()))
 
 # restore the renv project
-renv::restore(rebuild=TRUE, bioconductor=TRUE, repos=options('repos'))
+renv::restore()
+#renv::restore(rebuild=TRUE, repos=options('repos'))
 
 # save the new repository URL to the lock file 
 renv::snapshot(repos = c("RSPM" = "https://packagemanager.posit.co/cran/__linux__/jammy/latest"))
