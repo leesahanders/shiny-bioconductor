@@ -72,28 +72,28 @@ More complex example showing how to overwrite the behavior:
 
 ```mermaid
 graph TD
-    A[Start] --> B{Using renv?}
+    A[Start] --> B{Using renv?};
 
-    B -- No --> C[Globally Configured Repository URL]
-    B -- Yes --> D{New Project or Existing?}
+    B -- No --> C[Globally Configured Repository URL];
+    B -- Yes --> D{New Project or Existing?};
 
-    D -- New Project + renv init --> E[renv uses Global Settings for Repository URL]
-    D -- Clone Existing renv Project + renv restore --> F{Repository URL Specified During Restore?}
+    D -- New Project + renv init --> E[renv uses Global Settings for Repository URL];
+    D -- Clone Existing renv Project + renv restore --> F{Repository URL Specified During Restore?};
 
-    F -- No --> G[renv uses Repository URL recorded in renv.lock]
-    F -- Yes --> H[renv uses Specified Repository URL]
+    F -- No --> G[renv uses Repository URL recorded in renv.lock];
+    F -- Yes --> H[renv uses Specified Repository URL];
 
-    H --> I[renv snapshot]
-    I --> J[New Repository URL recorded in renv.lock]
+    H --> I[renv snapshot];
+    I --> J[New Repository URL recorded in renv.lock];
 
-    G --> K[R Package Installation (CRAN)]
+    G --> K{R Package Installation};
     J --> K
     E --> K
     C --> K
 
     subgraph Bioconductor Specifics
         L[Start Bioconductor Flow] --> M{Using renv + BiocManager?}
-        M -- No --> N[Globally Configured Bioconductor URL (e.g., options("BioC_mirror"))]
+        M -- No --> N[Globally Configured Bioconductor URL]
         M -- Yes --> O{New Project or Existing?}
 
         O -- New Project + renv init --> P[renv uses Global Bioconductor Settings]
@@ -109,6 +109,7 @@ graph TD
         U --> V
         P --> V
         N --> V
+
     end
 
     K --> W[End]
