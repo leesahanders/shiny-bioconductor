@@ -152,9 +152,9 @@ renv::init(bioconductor = "3.14")
 
 Some useful Bioconductor commands and tricks: <https://solutions.posit.co/envs-pkgs/bioconductor/index.html#problem-statement> and <https://pkgs.rstudio.com/renv/articles/bioconductor.html>. 
 
-### Example workflow
+### Example renv workflow and handy commands
 
-The R package upgrade workflow:
+The renv workflow:
 
 ```r
 # Use pak with renv
@@ -175,14 +175,11 @@ renv::upgrade()
 # if an upgrade goes astray, revert the lockfile
 renv::revert(commit = "abc123")
 
-# and restore the previous environment
-renv::restore()
-
-# restore the environment when installing on another machine 
+# and restore the previous environment or when installing on another machine 
 renv::restore()
 ```
 
-### renv::restore() and repository url
+### Restoring a project with renv::restore()
 
 The default behavior is to keep the repository URL's in the lockfile when running `renv::restore().` 
 
@@ -202,7 +199,7 @@ options(repos=c(BiocManager::repositories()))
 renv::restore(bioconductor=TRUE, repos=options('repos'))
 ```
 
-#### Changing the repository URL 
+#### Changing the repository URL during restore
 
 If we want to clone down a project and reference a different repository we can: 
 
@@ -224,6 +221,28 @@ renv::restore(rebuild=TRUE, bioconductor=TRUE, repos=options('repos'))
 
 # save the new repository URL to the lock file 
 renv::snapshot(repos = c("RSPM" = "https://packagemanager.posit.co/cran/__linux__/jammy/latest"))
+```
+
+#### Changing the repository URL on an active project 
+
+```r
+# Configure BiocManager to use Posit Package Manager
+options(BioC_mirror = "https://pkg.demo.posit.team/bioconductor/latest")
+
+# Configure BiocManager to load its configuration from Package Manager
+options(BIOCONDUCTOR_CONFIG_FILE = "https://pkg.demo.posit.team/bioconductor/latest/config.yaml")
+
+# Set the Bioconductor version to prevent defaulting to a newer version
+Sys.setenv("R_BIOC_VERSION" = "3.22")
+
+# Configure a CRAN snapshot compatible with Bioconductor 3.22
+options(repos = c(CRAN = "https://pkg.demo.posit.team/cran/__linux__/jammy/latest"))
+
+# Set the biocmanager repo url 
+options(repos=c(BiocManager::repositories()))
+
+# save the new repository URL to the lock file 
+renv::snapshot(repos = c("RSPM" = options('repos')))
 ```
 
 ### Useful debugging commands
