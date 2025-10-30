@@ -132,6 +132,10 @@ Parallelize your package installs (particularly useful for monstrous bioconducto
 
 Use `renv::record("renv@1.0.7")` to record renv 1.0.7 in the lockfile.
 
+### renv and git 
+
+Only publish the renv.lock file to git, never the renv folder with the package symlinks. The `.gitignore` file can be used to make git ignore that folder. 
+
 ### renv and bioconductor 
 
 For bioconductor: 
