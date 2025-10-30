@@ -152,7 +152,9 @@ renv::init(bioconductor = "3.14")
 
 Some useful Bioconductor commands and tricks: <https://solutions.posit.co/envs-pkgs/bioconductor/index.html#problem-statement> and <https://pkgs.rstudio.com/renv/articles/bioconductor.html>. 
 
-### Example renv workflow and handy commands
+## Example workflows
+
+### Handy commands
 
 The renv workflow:
 
@@ -223,7 +225,7 @@ renv::restore(rebuild=TRUE, bioconductor=TRUE, repos=options('repos'))
 renv::snapshot(repos = c("RSPM" = "https://packagemanager.posit.co/cran/__linux__/jammy/latest"))
 ```
 
-#### Changing the repository URL on an active project 
+#### Changing the repository URL on an active project - verified!
 
 ```r
 # Configure BiocManager to use Posit Package Manager
