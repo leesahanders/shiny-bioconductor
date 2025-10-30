@@ -80,6 +80,9 @@ In order to set up Bioconductor we need to:
 Add the following code to your R startup file (~/.Rprofile) or as a Workbench admin add this to the site-wide R startup file (Rprofile.site) to apply the configuration for all users: 
 
 ```r
+# Install the package that manages bioconductor packages
+install.packages('BiocManager')
+
 # Configure BiocManager to use Posit Package Manager
 options(BioC_mirror = "https://pkg.current.posit.team/bioconductor/latest")
 
@@ -198,11 +201,18 @@ options(renv.config.pak.enabled=TRUE)
 # Update the version of renv in the lock file to latest
 renv::record("renv@1.0.7")
 
-# Set the biocmanager repo url 
-options(repos=c(BiocManager::repositories()))
+# Set the R repository url(s)
+options(repos = c(RSPM = "https://pkg.current.posit.team/cran/__linux__/jammy/latest"), CRAN = "https://cloud.r-project.org")
+options(repos = c(CRAN = "https://pkg.current.posit.team/cran/__linux__/jammy/latest))
+
+# Install the package that manages bioconductor packages
+install.packages('BiocManager')
+
+# Set the biocmanager config file
+options(BIOCONDUCTOR_CONFIG_FILE = "https://pkg.current.posit.team/bioconductor/latest/config.yaml")
 
 # restore the renv project
-renv::restore(bioconductor=TRUE, repos=options('repos'))
+renv::restore(rebuild=TRUE)
 ```
 
 #### Changing the repository URL during restore
@@ -217,7 +227,7 @@ options(renv.config.pak.enabled=TRUE)
 renv::record("renv@1.0.7")
 
 # Set the R repository url(s)
-repos <- c(CRAN = "https://cloud.r-project.org", RSPM = "https://pkg.current.posit.team/cran/__linux__/jammy/latest")
+options(repos = c(RSPM = "https://pkg.current.posit.team/cran/__linux__/jammy/latest"), CRAN = "https://cloud.r-project.org")
 
 # Set the biocmanager repo url 
 options(repos=c(BiocManager::repositories()))
