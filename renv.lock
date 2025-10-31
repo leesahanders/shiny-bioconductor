@@ -30,7 +30,7 @@
       "Package": "BiocManager",
       "Version": "1.30.26",
       "Source": "Repository",
-      "Repository": "https://pkg.current.posit.team/cran/__linux__/jammy/latest",
+      "Repository": "https://packagemanager.posit.co/cran/__linux__/jammy/latest",
       "Requirements": [
         "utils"
       ],
@@ -845,7 +845,7 @@
       "Package": "plotly",
       "Version": "4.11.0",
       "Source": "Repository",
-      "Repository": "https://pkg.current.posit.team/cran/latest",
+      "Repository": "https://packagemanager.posit.co/cran/__linux__/jammy/latest",
       "Requirements": [
         "R",
         "RColorBrewer",
