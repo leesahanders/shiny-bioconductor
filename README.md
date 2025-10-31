@@ -192,6 +192,7 @@ renv::revert(commit = "abc123")
 
 # and restore the previous environment or when installing on another machine 
 renv::restore()
+#renv::restore(rebuild=TRUE, repos=options('repos'))
 ```
 
 ### Restoring a project with renv::restore()
@@ -201,6 +202,9 @@ The default behavior is to keep the repository URL's in the lockfile when runnin
 For example, we might follow these steps to restore a bioconductor renv project: 
 
 ```r
+# Intall renv
+install.packages("renv")
+
 # Use pak with renv
 options(renv.config.pak.enabled=TRUE)
 
@@ -211,17 +215,20 @@ renv::record("renv@1.0.7")
 install.packages('BiocManager')
 
 # Set the biocmanager config file
-options(BIOCONDUCTOR_CONFIG_FILE = "https://pkg.current.posit.team/bioconductor/latest/config.yaml")
+# options(BIOCONDUCTOR_CONFIG_FILE = "https://pkg.current.posit.team/bioconductor/latest/config.yaml")
 
 # restore the renv project
 renv::restore(rebuild=TRUE)
 ```
 
-#### Changing the repository URL during restore
+#### Changing the repository URL during restore - verified!
 
 If we want to clone down a project and reference a different repository we can: 
 
 ```r
+# Intall renv
+install.packages("renv")
+
 # Use pak with renv
 options(renv.config.pak.enabled=TRUE)
 
@@ -229,7 +236,7 @@ options(renv.config.pak.enabled=TRUE)
 renv::record("renv@1.0.7")
 
 # Set the R repository url(s)
-options(repos = c(RSPM = "https://pkg.current.posit.team/cran/__linux__/jammy/latest"), CRAN = "https://cloud.r-project.org")
+options(repos = c(RSPM = "https://pkg.current.posit.team/cran/__linux__/jammy/latest", CRAN = "https://pkg.current.posit.team/cran/__linux__/jammy/latest"))
 
 # Install the package that manages bioconductor packages
 install.packages('BiocManager')
@@ -241,20 +248,22 @@ options(BioC_mirror = "https://pkg.current.posit.team/bioconductor/latest")
 options(BIOCONDUCTOR_CONFIG_FILE = "https://pkg.current.posit.team/bioconductor/latest/config.yaml")
 
 # Set the Bioconductor version to prevent defaulting to a newer version
-Sys.setenv("R_BIOC_VERSION" = "3.22")
+Sys.setenv("R_BIOC_VERSION" = "3.20")
 
-# Configure a CRAN snapshot compatible with Bioconductor 3.22
+# Configure a CRAN snapshot compatible with Bioconductor 3.20
 options(repos = c(CRAN = "https://pkg.current.posit.team/cran/__linux__/jammy/latest"))
 
 # Set the biocmanager repo url 
-#options(repos=c(BiocManager::repositories()))
+options(repos=c(BiocManager::repositories()))
+
+# override the Bioconductor repositories used by renv
+options(renv.bioconductor.repos = c(BiocManager::repositories()))
 
 # restore the renv project
 renv::restore()
-#renv::restore(rebuild=TRUE, repos=options('repos'))
 
 # save the new repository URL to the lock file 
-renv::snapshot(repos = c("RSPM" = "https://packagemanager.posit.co/cran/__linux__/jammy/latest"))
+renv::snapshot()
 ```
 
 #### Changing the repository URL on an active project - verified!
