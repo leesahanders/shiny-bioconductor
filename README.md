@@ -47,10 +47,23 @@ We can set it with:
 
 ```r
 # Set the R repository url(s)
-options(repos = c(RSPM = "https://pkg.current.posit.team/cran/__linux__/jammy/latest"), CRAN = "https://cloud.r-project.org")
+options(repos = c(RSPM = "https://pkg.current.posit.team/cran/__linux__/jammy/latest", CRAN = "https://cloud.r-project.org"))
 
 # Only one repo
-options(repos = c(CRAN = "https://pkg.current.posit.team/cran/__linux__/jammy/latest))
+options(repos = c(CRAN = "https://pkg.current.posit.team/cran/__linux__/jammy/latest""))
+
+# Bioconductor
+# Configure BiocManager to use Posit Package Manager
+options(BioC_mirror = "https://packagemanager.posit.co/bioconductor/latest")
+
+# Configure BiocManager to load its configuration from Package Manager
+options(BIOCONDUCTOR_CONFIG_FILE = "https://packagemanager.posit.co/bioconductor/latest/config.yaml")
+
+# Set the Bioconductor version to prevent defaulting to a newer version
+Sys.setenv("R_BIOC_VERSION" = "3.22")
+
+# Configure a CRAN snapshot compatible with Bioconductor 3.22
+options(repos = c(CRAN = "https://packagemanager.posit.co/cran/__linux__/jammy/latest"))
 ```
 
 ## How is the repository set? 
@@ -281,8 +294,14 @@ Sys.setenv("R_BIOC_VERSION" = "3.22")
 # Configure a CRAN snapshot compatible with Bioconductor 3.22
 options(repos = c(CRAN = "https://pkg.demo.posit.team/cran/__linux__/jammy/latest"))
 
+# Set the version of Bioconductor used in a project
+renv::settings$bioconductor.version("3.22")
+
 # Set the biocmanager repo url 
 options(repos=c(BiocManager::repositories()))
+
+# override the Bioconductor repositories used by renv
+options(renv.bioconductor.repos = c(BiocManager::repositories()))
 
 # save the new repository URL to the lock file 
 renv::snapshot(repos = c("RSPM" = options('repos')))
