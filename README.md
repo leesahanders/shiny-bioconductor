@@ -225,7 +225,7 @@ options(renv.config.pak.enabled=TRUE)
 renv::record("renv@1.0.7")
 
 # Install the package that manages bioconductor packages
-install.packages('BiocManager')
+install.packages('BiocManager', repos = c(CRAN = "https://packagemanager.posit.co/cran/__linux__/jammy/latest"))
 
 # Set the biocmanager config file
 # options(BIOCONDUCTOR_CONFIG_FILE = "https://pkg.current.posit.team/bioconductor/latest/config.yaml")
