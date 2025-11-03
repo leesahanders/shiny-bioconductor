@@ -157,7 +157,9 @@ Use `renv::record("renv@1.0.7")` to record renv 1.0.7 in the lockfile.
 
 ### renv and git 
 
-The `renv.lock` file, at a minimum, will need to published to your version control repository. There are differing opinions on whether or not to publish other files like `.Rprofile`, `renv/settings.json` and `renv/activate.R` but it doesn't hurt to include these. Don't include the other files in the `renv` folder with the package symlinks. The `.gitignore` file can be used to make git ignore that folder. 
+The `renv.lock` file, at a minimum, will need to published to your version control repository. Other files, according to the renv documentation, like `.Rprofile`, `renv/settings.json` and `renv/activate.R` should also be included. Don't include the other files in the `renv` folder with the package symlinks. The `.gitignore` file can be used to make git ignore that folder. 
+
+Reference the renv documentation: <https://rstudio.github.io/renv/articles/renv.html?q=version%20con#collaboration>
 
 ### renv and bioconductor 
 
