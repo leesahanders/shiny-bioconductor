@@ -14,6 +14,7 @@ This is a very simple example showing a repository that can be cloned down to sh
 - CRAN startup: Friendly R Startup Configuration: <https://cran.r-project.org/web/packages/startup/vignettes/startup-intro.html>
 - Some useful Bioconductor commands and tricks: <https://solutions.posit.co/envs-pkgs/bioconductor/index.html#problem-statement> and <https://pkgs.rstudio.com/renv/articles/bioconductor.html>. 
 - Appsilon: How to Use {renv} and Bioconductor for Reproducible Data Analysis: <https://www.appsilon.com/post/renv-bioconductor> 
+- Sam Edwardes example here: <https://github.com/SamEdwardes/rstudio-demos/tree/main/applications/bioconductor-shiny> 
 
 ## Understand your package repositories (before renv) 
 
@@ -66,7 +67,7 @@ Sys.setenv("R_BIOC_VERSION" = "3.22")
 options(repos = c(CRAN = "https://packagemanager.posit.co/cran/__linux__/jammy/latest"))
 ```
 
-## How is the repository set? 
+## How is the repository set with renv? 
 
 Diagram showing how the repository URL is set: 
 
@@ -94,9 +95,9 @@ graph TD
 
 ## Bioconductor
 
-In order to set up Bioconductor we need to: 
+In order to use bioconductor we need to make sure we are configured locally to connect to a bioconductor repository. My favorite way to do this is to use Posit Package Manager (either the free one, or the enterprise version) and follow it's recommended setup steps. 
 
-Add the following code to your R startup file (~/.Rprofile) or as a Workbench admin add this to the site-wide R startup file (Rprofile.site) to apply the configuration for all users: 
+In order to set up Bioconductor we need to add the following code to your R startup file (~/.Rprofile) or as a Workbench admin add this to the site-wide R startup file (Rprofile.site) to apply the configuration for all users: 
 
 ```r
 # Install the package that manages bioconductor packages
@@ -144,7 +145,7 @@ Replacement repositories:
 
 </details>
 
-## Workflow 
+## Tips and tricks
 
 ### Fast installs with pak 
 
@@ -156,7 +157,7 @@ Use `renv::record("renv@1.0.7")` to record renv 1.0.7 in the lockfile.
 
 ### renv and git 
 
-Only publish the renv.lock file to git, never the renv folder with the package symlinks. The `.gitignore` file can be used to make git ignore that folder. 
+The `renv.lock` file, at a minimum, will need to published to your version control repository. There are differing opinions on whether or not to publish other files like `.Rprofile`, `renv/settings.json` and `renv/activate.R` but it doesn't hurt to include these. Don't include the other files in the `renv` folder with the package symlinks. The `.gitignore` file can be used to make git ignore that folder. 
 
 ### renv and bioconductor 
 
@@ -177,8 +178,6 @@ renv::init(bioconductor = "3.14")
 ```
 
 Some useful Bioconductor commands and tricks: <https://solutions.posit.co/envs-pkgs/bioconductor/index.html#problem-statement> and <https://pkgs.rstudio.com/renv/articles/bioconductor.html>. 
-
-## Example workflows
 
 ### Handy commands
 
@@ -206,6 +205,39 @@ renv::revert(commit = "abc123")
 # and restore the previous environment or when installing on another machine 
 renv::restore()
 #renv::restore(rebuild=TRUE, repos=options('repos'))
+```
+
+## Example workflows
+
+### Setting up a project to use renv and bioconductor correctly 
+
+```r
+# Install renv
+install.packages("renv")
+
+# Check your settings before enabling renv, run the commands above to set your repositories if this doesn't return the correct repositories 
+getOption("repos")
+
+# Setup and configure renv for the project
+renv::init(
+  # Renv will automatically detect the correct bioconductor version to use
+  # based on your R version. You can also check for yourself here:
+  # https://p3m.dev/client/#/repos/bioconductor/setup.
+  # Setting bioconductor true will also set the correct repos (e.g. BioCsoft, 
+  # BioCann, etc.)
+  bioconductor = TRUE,
+  repos = c(
+    CRAN = "https://p3m.dev/cran/latest"
+  ),
+  settings = list(
+    # Use binary linux packages when available
+    ppm.enabled = TRUE
+  )
+)
+
+# Check the results
+BiocManager::repositories()
+getOption("repos")
 ```
 
 ### Restoring a project with renv::restore()
