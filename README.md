@@ -242,6 +242,41 @@ BiocManager::repositories()
 getOption("repos")
 ```
 
+### Setting up a project to use renv and bioconductor correctly 
+
+```r
+# Install renv
+install.packages("renv")
+
+# Check your settings before enabling renv, run the commands above to set your repositories if this doesn't return the correct repositories 
+getOption("repos")
+
+# Setup and configure renv for the project
+renv::init(
+  # Renv will automatically detect the correct bioconductor version to use
+  # based on your R version. You can also check for yourself here:
+  # https://p3m.dev/client/#/repos/bioconductor/setup.
+  # Setting bioconductor true will also set the correct repos (e.g. BioCsoft, 
+  # BioCann, etc.)
+  bioconductor = TRUE,
+  repos = c(
+    CRAN = "https://p3m.dev/cran/latest"
+  ),
+  settings = list(
+    # Use binary linux packages when available
+    ppm.enabled = TRUE
+  )
+)
+
+# Check the results
+BiocManager::repositories()
+getOption("repos")
+
+
+```
+
+
+
 ### Restoring a project with renv::restore()
 
 The default behavior is to keep the repository URL's in the lockfile when running `renv::restore().` 
